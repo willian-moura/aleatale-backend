@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+php /var/www/html/artisan key:generate
+php /var/www/html/artisan migrate
+php /var/www/html/artisan install:api
+php /var/www/html/artisan db:seed
