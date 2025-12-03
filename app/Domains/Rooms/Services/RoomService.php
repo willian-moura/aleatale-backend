@@ -20,5 +20,30 @@ class RoomService
 
         return $query->orderBy('created_at', 'desc')->paginate($perPage);
     }
-}
 
+    /**
+     * Get a room by id.
+     */
+    public function getById(int $id): Room
+    {
+        return Room::findOrFail($id);
+    }
+
+    /**
+     * Update a room.
+     */
+    public function update(Room $room, array $data): Room
+    {
+        $room->update($data);
+
+        return $room;
+    }
+
+    /**
+     * Delete a room (soft delete).
+     */
+    public function delete(Room $room): void
+    {
+        $room->delete();
+    }
+}
