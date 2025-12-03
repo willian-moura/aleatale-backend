@@ -7,18 +7,17 @@ use App\Http\Routes\RouteFile;
 
 class RoomRoutes extends RouteFile
 {
-
     protected function config()
     {
         return [
-            'prefix' => 'room/rooms',
+            'prefix' => 'rooms',
+            'middleware' => 'auth:sanctum',
         ];
     }
 
     protected function routes()
     {
-        $this->router->middleware([])->group(function () {
-            $this->router->post('/', [RoomController::class, 'store']);
-        });
+        $this->router->get('/', [RoomController::class, 'index']);
+        $this->router->post('/', [RoomController::class, 'store']);
     }
 }

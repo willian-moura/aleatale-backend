@@ -3,16 +3,22 @@
 namespace App\Domains\Rooms\Services;
 
 use App\Jobs\BroadcastRoomClock;
+use App\Models\Room;
 use Carbon\Carbon;
+use Illuminate\Support\Str;
+use App\Domains\Rooms\Enums\RoomStatusEnum;
 
 class CreateRoomService
 {
-    public function execute()
+    public function execute(array $data)
     {
-        // create room
+        $room = Room::create([
+            'uuid' => Str::uuid(),
+            'name' => $data['name'],
+            'status' => RoomStatusEnum::CREATED->value,
+        ]);
 
-        // start clock event
-        $this->startClockEvent();
+        return $room;
     }
 
     protected function startClockEvent()
