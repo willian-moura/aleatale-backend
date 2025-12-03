@@ -28,7 +28,7 @@ class AuthController extends Controller
             $request->password
         );
 
-        return response()->json($result);
+        return $this->success($result);
     }
 
     /**
@@ -38,8 +38,6 @@ class AuthController extends Controller
     {
         $this->authService->logout($request->user()->currentAccessToken());
 
-        return response()->json([
-            'message' => 'Logged out successfully.',
-        ]);
+        return $this->success(['message' => 'Logged out successfully.']);
     }
 }

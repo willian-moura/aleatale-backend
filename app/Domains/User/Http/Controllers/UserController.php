@@ -19,7 +19,7 @@ class UserController extends Controller
      */
     public function index(): JsonResponse
     {
-        return response()->json($this->userService->list());
+        return $this->success($this->userService->list());
     }
 
     /**
@@ -35,7 +35,7 @@ class UserController extends Controller
 
         $user = $this->userService->create($validated);
 
-        return response()->json($user, 201);
+        return $this->success($user, 201);
     }
 
     /**
@@ -43,7 +43,7 @@ class UserController extends Controller
      */
     public function show(User $user): JsonResponse
     {
-        return response()->json($user);
+        return $this->success($user);
     }
 
     /**
@@ -59,7 +59,7 @@ class UserController extends Controller
 
         $user = $this->userService->update($user, $validated);
 
-        return response()->json($user);
+        return $this->success($user);
     }
 
     /**
@@ -69,6 +69,6 @@ class UserController extends Controller
     {
         $this->userService->delete($user);
 
-        return response()->json(null, 204);
+        return $this->success(null, 204);
     }
 }
