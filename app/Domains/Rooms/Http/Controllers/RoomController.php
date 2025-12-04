@@ -81,4 +81,68 @@ class RoomController extends Controller
 
         return $this->success('Room deleted successfully', 200);
     }
+
+    /**
+     * Join a room.
+     */
+    public function join(Request $request, int $id): JsonResponse
+    {
+        $room = Room::findOrFail($id);
+        $user = $request->user();
+
+        try {
+            $roomUser = $this->roomService->join($room, $user);
+            return $this->success($roomUser, 201);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), [], 400);
+        }
+    }
+
+    /**
+     * Leave a room.
+     */
+    public function leave(Request $request, int $id): JsonResponse
+    {
+        $room = Room::findOrFail($id);
+        $user = $request->user();
+
+        try {
+            $this->roomService->leave($room, $user);
+            return $this->success(['message' => 'Left room successfully.']);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), [], 400);
+        }
+    }
+
+    /**
+     * Mark user as ready in the room.
+     */
+    public function ready(Request $request, int $id): JsonResponse
+    {
+        $room = Room::findOrFail($id);
+        $user = $request->user();
+
+        try {
+            $roomUser = $this->roomService->setReady($room, $user, true);
+            return $this->success($roomUser);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), [], 400);
+        }
+    }
+
+    /**
+     * Mark user as not ready in the room.
+     */
+    public function notReady(Request $request, int $id): JsonResponse
+    {
+        $room = Room::findOrFail($id);
+        $user = $request->user();
+
+        try {
+            $roomUser = $this->roomService->setReady($room, $user, false);
+            return $this->success($roomUser);
+        } catch (\Exception $e) {
+            return $this->error($e->getMessage(), [], 400);
+        }
+    }
 }

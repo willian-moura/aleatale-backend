@@ -22,5 +22,13 @@ class RoomRoutes extends RouteFile
         $this->router->get('/{id}', [RoomController::class, 'show']);
         $this->router->put('/{id}', [RoomController::class, 'update']);
         $this->router->delete('/{id}', [RoomController::class, 'destroy']);
+
+        // Room membership
+        $this->router->post('/{id}/join', [RoomController::class, 'join']);
+        $this->router->post('/{id}/leave', [RoomController::class, 'leave']);
+
+        // Ready status
+        $this->router->post('/{id}/ready', [RoomController::class, 'ready']);
+        $this->router->post('/{id}/not-ready', [RoomController::class, 'notReady']);
     }
 }
