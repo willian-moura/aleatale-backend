@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Events\GenericEvent;
 use App\Events\RoomClockUpdate;
 use Carbon\Carbon;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -10,7 +11,7 @@ use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 
-class BroadcastRoomClock implements ShouldQueue
+class BroadcastJob implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -18,8 +19,9 @@ class BroadcastRoomClock implements ShouldQueue
      * Create a new job instance.
      */
     public function __construct(
-        public $roomUuid,
-        public $roomCreatedAt,
+        private GenericEvent $event,
+        private int $dispatchTimes = 1,
+        private int $dispatchDelayMs = 1000
     ) {}
 
     /**
@@ -27,12 +29,10 @@ class BroadcastRoomClock implements ShouldQueue
      */
     public function handle(): void
     {
-        $secondsSinceCreation = Carbon::create($this->roomCreatedAt)->diffInSeconds(Carbon::now());
+        broadcast($this->event)->toOthers();
 
-        // Broadcast the clock event
-        broadcast(new RoomClockUpdate($secondsSinceCreation, $this->roomUuid))->toOthers();
-
-        // Re-dispatch the job to run again in 1 second
-        BroadcastRoomClock::dispatch($this->roomUuid, $this->roomCreatedAt)->delay(now()->addSecond());
+        if ($this->dispatchTimes > 1) {
+            BroadcastJob::dispatch($this->event, $this->dispatchTimes - 1, $this->dispatchDelayMs)->delay($this->dispatchDelayMs);
+        }
     }
 }

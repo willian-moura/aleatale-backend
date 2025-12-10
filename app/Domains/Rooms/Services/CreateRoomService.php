@@ -2,7 +2,7 @@
 
 namespace App\Domains\Rooms\Services;
 
-use App\Jobs\BroadcastRoomClock;
+use App\Jobs\BroadcastJob;
 use App\Models\Room;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
@@ -26,6 +26,6 @@ class CreateRoomService
         $roomUuid = 'uuid-test-uuid-test-uuid';
         $roomCreatedAt = Carbon::now();
 
-        BroadcastRoomClock::dispatch($roomUuid, $roomCreatedAt)->delay(now()->addSecond());
+        BroadcastJob::dispatch($roomUuid, $roomCreatedAt)->delay(now()->addSecond());
     }
 }

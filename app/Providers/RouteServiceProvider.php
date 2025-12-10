@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Domains\Rooms\Http\Routes\RoomRoutes;
+use App\Domains\Tests\Http\Routes\TestRoutes;
 use App\Domains\User\Http\Routes\AuthRoutes;
 use App\Domains\User\Http\Routes\UserRoutes;
 use App\Http\Middlewares\LogRequest;
@@ -14,6 +15,7 @@ class RouteServiceProvider extends \Illuminate\Foundation\Support\Providers\Rout
         AuthRoutes::class,
         UserRoutes::class,
         RoomRoutes::class,
+        TestRoutes::class,
     ];
 
     public function boot()
@@ -23,7 +25,7 @@ class RouteServiceProvider extends \Illuminate\Foundation\Support\Providers\Rout
         foreach ($this->apiRoutes as $route) {
             $middlewares = [];
 
-            if(env('DEBUG_QUERY')){
+            if (env('DEBUG_QUERY')) {
                 $middlewares[] = LogRequest::class;
             }
 

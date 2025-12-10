@@ -3,7 +3,10 @@
 namespace App\Domains\Rooms\Http\Controllers;
 
 use App\Domains\Rooms\Services\CreateRoomService;
+use App\Domains\Rooms\Services\JoinRoomService;
+use App\Domains\Rooms\Services\LeaveRoomService;
 use App\Domains\Rooms\Services\RoomService;
+use App\Domains\Rooms\Services\SetReadyService;
 use App\Http\Controllers\Controller;
 use App\Models\Room;
 use Illuminate\Http\JsonResponse;
@@ -13,7 +16,10 @@ class RoomController extends Controller
 {
     public function __construct(
         private RoomService $roomService,
-        private CreateRoomService $createRoomService
+        private CreateRoomService $createRoomService,
+        private JoinRoomService $joinRoomService,
+        private LeaveRoomService $leaveRoomService,
+        private SetReadyService $setReadyService
     ) {}
 
     /**
@@ -91,8 +97,8 @@ class RoomController extends Controller
         $user = $request->user();
 
         try {
-            $roomUser = $this->roomService->join($room, $user);
-            return $this->success($roomUser, 201);
+            $roomUser = $this->joinRoomService->execute($room, $user);
+            return $this->success($roomUser->room, 201);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), [], 400);
         }
@@ -107,7 +113,7 @@ class RoomController extends Controller
         $user = $request->user();
 
         try {
-            $this->roomService->leave($room, $user);
+            $this->leaveRoomService->execute($room, $user);
             return $this->success(['message' => 'Left room successfully.']);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), [], 400);
@@ -123,7 +129,7 @@ class RoomController extends Controller
         $user = $request->user();
 
         try {
-            $roomUser = $this->roomService->setReady($room, $user, true);
+            $roomUser = $this->setReadyService->execute($room, $user, true);
             return $this->success($roomUser);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), [], 400);
@@ -139,7 +145,7 @@ class RoomController extends Controller
         $user = $request->user();
 
         try {
-            $roomUser = $this->roomService->setReady($room, $user, false);
+            $roomUser = $this->setReadyService->execute($room, $user, false);
             return $this->success($roomUser);
         } catch (\Exception $e) {
             return $this->error($e->getMessage(), [], 400);
