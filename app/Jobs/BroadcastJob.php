@@ -21,7 +21,7 @@ class BroadcastJob implements ShouldQueue
     public function __construct(
         private GenericEvent $event,
         private int $dispatchTimes = 1,
-        private int $dispatchDelayMs = 1000
+        private int $dispatchDelayMs = 1
     ) {}
 
     /**
