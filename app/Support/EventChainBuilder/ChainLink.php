@@ -9,7 +9,7 @@ class ChainLink
     public function __construct(
         public GenericEvent $event,
         public int $times = 1,
-        public int $delay = 1000
+        public int $delay = 1
     ) {}
 
     public function getEvent(): GenericEvent

@@ -12,9 +12,14 @@ class EventChainBuilder
      * @var ChainLink[]
      */
     private array $chainLinks = [];
-    private int $currentDelayMs = 0;
 
-    public function chainEvent(GenericEvent $event, int $times = 1, int $delay = 1000): self
+    /**
+     * @var int
+     * Indica o atraso atual em segundos
+    */
+    private int $currentDelay = 0;
+
+    public function chainEvent(GenericEvent $event, int $times = 1, int $delay = 1): self
     {
         $this->chainLinks[] = new ChainLink($event, $times, $delay);
         return $this;
@@ -33,14 +38,14 @@ class EventChainBuilder
         $times = $link->getTimes();
         $delay = $link->getDelay();
 
-        BroadcastJob::dispatch($event, $times, $delay)->delay($this->currentDelayMs);
+        BroadcastJob::dispatch($event, $times, $delay)->delay($this->currentDelay);
 
         $this->increaseCurrentDelay($times * $delay);
     }
 
     private function increaseCurrentDelay(int $delay): self
     {
-        $this->currentDelayMs += $delay;
+        $this->currentDelay += $delay;
         return $this;
     }
 }
