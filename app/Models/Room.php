@@ -25,6 +25,7 @@ class Room extends Model
         return $this->belongsToMany(User::class)
             ->using(RoomUser::class)
             ->withTimestamps()
+            ->withPivot('ready')
             ->withPivot('deleted_at')
             ->wherePivotNull('deleted_at');
     }

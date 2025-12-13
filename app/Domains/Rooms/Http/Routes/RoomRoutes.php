@@ -20,6 +20,7 @@ class RoomRoutes extends RouteFile
         $this->router->get('/', [RoomController::class, 'index']);
         $this->router->post('/', [RoomController::class, 'store']);
         $this->router->get('/{id}', [RoomController::class, 'show']);
+        $this->router->get('/{id}/state', [RoomController::class, 'state']);
         $this->router->put('/{id}', [RoomController::class, 'update']);
         $this->router->delete('/{id}', [RoomController::class, 'destroy']);
 

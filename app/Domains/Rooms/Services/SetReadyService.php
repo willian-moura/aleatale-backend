@@ -26,6 +26,8 @@ class SetReadyService
 
         $entry->update(['ready' => $ready]);
 
+        broadcast(new PlayerReadyEvent($user, $room))->toOthers();
+
         return $entry;
     }
 }

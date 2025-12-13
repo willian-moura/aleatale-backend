@@ -2,15 +2,17 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class RoomUser extends Model
+class RoomUser extends Pivot
 {
     use SoftDeletes;
 
     protected $table = 'room_user';
+    
+    public $incrementing = true;
 
     protected $fillable = [
         'room_id',

@@ -13,7 +13,6 @@ use Illuminate\Support\Str;
 class TestEventBuilderService
 {
     public function execute(): array {
-//        $room = Room::query()->firstOrCreate(['name' => 'TestRoom', 'uuid' => Str::uuid(), 'status' => RoomStatusEnum::CREATED->value]);
         $room = Room::query()->first();
 
         $builder = new EventChainBuilder();

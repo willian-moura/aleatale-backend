@@ -2,6 +2,7 @@
 
 namespace App\Domains\Rooms\Services;
 
+use App\Domains\Rooms\Events\PlayerLeftEvent;
 use App\Models\Room;
 use App\Models\RoomUser;
 use App\Models\User;
@@ -25,6 +26,8 @@ class LeaveRoomService
         }
 
         $entry->delete();
+
+        broadcast(new PlayerLeftEvent($entry, $room))->toOthers();
     }
 }
 

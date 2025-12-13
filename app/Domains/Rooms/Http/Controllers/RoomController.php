@@ -3,6 +3,7 @@
 namespace App\Domains\Rooms\Http\Controllers;
 
 use App\Domains\Rooms\Services\CreateRoomService;
+use App\Domains\Rooms\Services\GetRoomStateService;
 use App\Domains\Rooms\Services\JoinRoomService;
 use App\Domains\Rooms\Services\LeaveRoomService;
 use App\Domains\Rooms\Services\RoomService;
@@ -19,7 +20,8 @@ class RoomController extends Controller
         private CreateRoomService $createRoomService,
         private JoinRoomService $joinRoomService,
         private LeaveRoomService $leaveRoomService,
-        private SetReadyService $setReadyService
+        private SetReadyService $setReadyService,
+        private GetRoomStateService $getRoomStateService
     ) {}
 
     /**
@@ -57,6 +59,26 @@ class RoomController extends Controller
         $room = $this->roomService->getById($id);
 
         return $this->success($room);
+    }
+
+    /**
+     * Get the current state of a room.
+     * Only users present in the room can access the state.
+     */
+    public function state(Request $request, int $id): JsonResponse
+    {
+        $room = Room::findOrFail($id);
+        $user = $request->user();
+
+        $isInRoom = $room->users()->where('user_id', $user->id)->exists();
+
+        if (!$isInRoom) {
+            return $this->error('You are not a member of this room.', [], 403);
+        }
+
+        $state = $this->getRoomStateService->execute($room);
+
+        return $this->success($state);
     }
 
     /**
