@@ -11,16 +11,17 @@ class UserRoutes extends RouteFile
     {
         return [
             'prefix' => 'users',
-            'middleware' => 'auth:sanctum',
         ];
     }
 
     protected function routes()
     {
-        $this->router->get('/', [UserController::class, 'index']);
         $this->router->post('/', [UserController::class, 'store']);
-        $this->router->get('/{user}', [UserController::class, 'show']);
-        $this->router->put('/{user}', [UserController::class, 'update']);
-        $this->router->delete('/{user}', [UserController::class, 'destroy']);
+        $this->router->middleware('auth:sanctum')->group(function () {
+            $this->router->get('/', [UserController::class, 'index']);
+            $this->router->get('/{user}', [UserController::class, 'show']);
+            $this->router->put('/{user}', [UserController::class, 'update']);
+            $this->router->delete('/{user}', [UserController::class, 'destroy']);
+        });
     }
 }

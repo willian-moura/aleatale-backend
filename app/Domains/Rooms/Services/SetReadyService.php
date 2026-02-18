@@ -2,6 +2,7 @@
 
 namespace App\Domains\Rooms\Services;
 
+use App\Domains\Rooms\Events\PlayerReadyEvent;
 use App\Models\Room;
 use App\Models\RoomUser;
 use App\Models\User;
@@ -28,7 +29,15 @@ class SetReadyService
 
         broadcast(new PlayerReadyEvent($user, $room))->toOthers();
 
+        if ($this->checkIfAllPlayersReady($room)) {
+            (new StartGameService($room))->execute();
+        }
+
         return $entry;
     }
-}
 
+    private function checkIfAllPlayersReady(Room $room): bool
+    {
+        return $room->users()->where('ready', false)->count() === 0;
+    }
+}

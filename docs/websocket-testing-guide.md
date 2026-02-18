@@ -7,6 +7,7 @@ Este guia descreve o passo a passo completo para testar a conexão WebSocket com
 - Postman instalado (versão com suporte a WebSocket)
 - Servidor Laravel rodando (`php artisan serve`)
 - Servidor WebSocket rodando (Soketi, Reverb ou Pusher)
+- Queue Worker rodando (`./vendor/bin/sail artisan queue:work`)
 - Banco de dados configurado com pelo menos um usuário e uma sala criada
 
 ---
@@ -14,19 +15,17 @@ Este guia descreve o passo a passo completo para testar a conexão WebSocket com
 ## Visão Geral do Fluxo
 
 ```
-1. Login (obter token)
+Login (obter token)
       ↓
-2. Criar/Obter sala (obter UUID)
+Criar/Obter sala (obter UUID)
       ↓
-3. Conectar ao WebSocket
+Conectar ao WebSocket (obter socket_id)
       ↓
-4. Obter socket_id
+Autenticar canal privado
       ↓
-5. Autenticar canal privado
+Inscrever no canal com auth
       ↓
-6. Inscrever no canal com auth
-      ↓
-7. Disparar evento de teste
+Disparar evento de teste
 ```
 
 ---
@@ -199,6 +198,8 @@ De volta à conexão WebSocket no Postman, envie a seguinte mensagem:
 > - `channel`: mesmo nome usado no Passo 4
 > - `auth`: valor obtido no Passo 4
 
+> ⚠️ **Atenção**: O valor de `auth` deve ser inserido como uma **string literal** (ex: `"app-key:a1b2c3d4e5f6..."`). Variáveis de ambiente do Postman como `"app-key:{{app_secret}}"` **não funcionam** em mensagens WebSocket. Copie e cole o valor completo retornado no Passo 4.
+
 ### Response de Sucesso
 
 ```json
@@ -320,3 +321,13 @@ soketi start
 ```bash
 php artisan reverb:start
 ```
+
+### Iniciar Queue Worker (necessário para disparar eventos)
+
+Os eventos são despachados via jobs na fila. Para que os eventos sejam processados e enviados via WebSocket, você precisa iniciar o queue worker:
+
+```bash
+./vendor/bin/sail artisan queue:work
+```
+
+> **Nota**: Mantenha este terminal rodando enquanto estiver testando. Sem o queue worker, os eventos não serão despachados.

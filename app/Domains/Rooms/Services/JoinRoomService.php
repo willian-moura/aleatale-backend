@@ -31,7 +31,7 @@ class JoinRoomService
             'ready' => false,
         ]);
 
-        broadcast(new PlayerJoinedEvent($roomUser, $room))->toOthers();
+        broadcast(new PlayerJoinedEvent($user, $room))->toOthers();
 
         return $roomUser;
     }

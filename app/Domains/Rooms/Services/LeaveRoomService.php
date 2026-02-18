@@ -27,7 +27,7 @@ class LeaveRoomService
 
         $entry->delete();
 
-        broadcast(new PlayerLeftEvent($entry, $room))->toOthers();
+        broadcast(new PlayerLeftEvent($user, $room))->toOthers();
     }
 }
 

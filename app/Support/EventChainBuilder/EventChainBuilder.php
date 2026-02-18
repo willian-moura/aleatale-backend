@@ -16,7 +16,7 @@ class EventChainBuilder
     /**
      * @var int
      * Indica o atraso atual em segundos
-    */
+     */
     private int $currentDelay = 0;
 
     public function chainEvent(GenericEvent $event, int $times = 1, int $delay = 1): self
@@ -40,7 +40,8 @@ class EventChainBuilder
 
         BroadcastJob::dispatch($event, $times, $delay)->delay($this->currentDelay);
 
-        $this->increaseCurrentDelay($times * $delay);
+        $duration = $times > 1 ? ($times - 1) * $delay : 0;
+        $this->increaseCurrentDelay($duration);
     }
 
     private function increaseCurrentDelay(int $delay): self
