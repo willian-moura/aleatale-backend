@@ -22,11 +22,11 @@ class Room extends Model
         'started_at' => 'datetime',
     ];
 
-    public int $submissionTime = 10;
-    public int $intervalTime = 10;
-    public int $voteTime = 10;
-    public int $resultsTime = 10;
-    public int $gameTurns = 10;
+    public int $submissionTime = 11;
+    public int $intervalTime = 11;
+    public int $voteTime = 11;
+    public int $resultsTime = 11;
+    public int $gameTurns = 2;
 
     /**
      * Get the users in this room.

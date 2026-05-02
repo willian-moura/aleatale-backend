@@ -7,6 +7,8 @@ use App\Domains\Rooms\Enums\RoomEventTypeEnum;
 
 class GameStartingEvent extends ARoomEvent
 {
+    private int $countdown = 5;
+
     public function getEventType(): RoomEventTypeEnum
     {
         return RoomEventTypeEnum::GAME_STARTING;
@@ -14,6 +16,8 @@ class GameStartingEvent extends ARoomEvent
 
     public function getPayload(): array
     {
-        return [];
+        return [
+            'countdown' => $this->countdown,
+        ];
     }
 }

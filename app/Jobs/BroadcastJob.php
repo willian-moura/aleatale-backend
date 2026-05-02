@@ -30,6 +30,14 @@ class BroadcastJob implements ShouldQueue
     public function handle(): void
     {
         broadcast($this->event)->toOthers();
+        if (config('app.log_level') === 'debug') {
+            logger()->debug('BroadcastJob handled', [
+                'event' => get_class($this->event),
+                'dispatchTimes' => $this->dispatchTimes,
+                'dispatchDelayMs' => $this->dispatchDelayMs,
+            ]);
+        }
+
 
         if ($this->dispatchTimes > 1) {
             BroadcastJob::dispatch($this->event, $this->dispatchTimes - 1, $this->dispatchDelayMs)->delay($this->dispatchDelayMs);

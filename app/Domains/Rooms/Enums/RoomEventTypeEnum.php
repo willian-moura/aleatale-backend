@@ -30,6 +30,16 @@ enum RoomEventTypeEnum: string
     case GAME_STARTING = 'game_starting';
 
     /**
+     * Jogo iniciado
+     */
+    case GAME_STARTED = 'game_started';
+
+    /**
+     * Turno mudou
+     */
+    case TURN_CHANGE = 'turn_change';
+
+    /**
      * Mudança de fase (submissão → intervalo → votação → resultado)
      */
     case PHASE_CHANGE = 'phase_change';

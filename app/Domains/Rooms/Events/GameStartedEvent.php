@@ -4,29 +4,27 @@ namespace App\Domains\Rooms\Events;
 
 use App\Domains\Rooms\Contracts\ARoomEvent;
 use App\Domains\Rooms\Enums\RoomEventTypeEnum;
-use App\Domains\Rooms\Enums\RoomPhaseEnum;
 use App\Models\Room;
+use Override;
 
-class PhaseChangeEvent extends ARoomEvent
+class GameStartedEvent extends ARoomEvent
 {
     public function __construct(
         Room $room,
-        private RoomPhaseEnum $phase,
-        private int $countdown,
+        private int $turns
     ) {
         parent::__construct($room);
     }
 
     public function getEventType(): RoomEventTypeEnum
     {
-        return RoomEventTypeEnum::PHASE_CHANGE;
+        return RoomEventTypeEnum::GAME_STARTED;
     }
 
     public function getPayload(): array
     {
         return [
-            'phase' => $this->phase->value,
-            'countdown' => $this->countdown,
+            'turns' => $this->turns,
         ];
     }
 }

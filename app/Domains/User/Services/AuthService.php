@@ -19,10 +19,18 @@ class AuthService
         $user = User::where('email', $email)->first();
 
         if (!$user || !Hash::check($password, $user->password)) {
+            logger()->error('Invalid credentials', [
+                'email' => $email,
+            ]);
             throw ValidationException::withMessages([
                 'email' => ['The provided credentials are incorrect.'],
             ]);
         }
+
+        logger()->info('User logged in', [
+            'user_id' => $user->id,
+            'user_email' => $user->email,
+        ]);
 
         $token = $user->createToken('auth-token')->plainTextToken;
 
@@ -40,4 +48,3 @@ class AuthService
         $token->delete();
     }
 }
-
