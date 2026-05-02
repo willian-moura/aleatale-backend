@@ -27,6 +27,7 @@ class RoomRoutes extends RouteFile
             'uuid' => Str::uuid(),
             'name' => 'Room ' . Str::random(8),
             'status' => 'created',
+            'tale_content' => 'Era uma vez...',
         ]));
         $this->router->delete('/delete-all', fn() => Room::query()->forceDelete());
 
@@ -42,5 +43,9 @@ class RoomRoutes extends RouteFile
         // Ready status
         $this->router->post('/{id}/ready', [RoomController::class, 'ready']);
         $this->router->post('/{id}/not-ready', [RoomController::class, 'notReady']);
+
+        // Game actions
+        $this->router->post('/{id}/submit', [RoomController::class, 'submit']);
+        $this->router->post('/{id}/vote', [RoomController::class, 'vote']);
     }
 }

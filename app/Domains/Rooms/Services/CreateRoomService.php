@@ -16,6 +16,7 @@ class CreateRoomService
             'uuid' => Str::uuid(),
             'name' => $data['name'],
             'status' => RoomStatusEnum::CREATED->value,
+            'tale_content' => 'Era uma vez...',
         ]);
 
         return $room;

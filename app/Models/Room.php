@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Room extends Model
@@ -16,6 +17,7 @@ class Room extends Model
         'name',
         'status',
         'started_at',
+        'tale_content',
     ];
 
     protected $casts = [
@@ -23,10 +25,10 @@ class Room extends Model
     ];
 
     public int $submissionTime = 11;
-    public int $intervalTime = 11;
+    public int $intervalTime = 6;
     public int $voteTime = 11;
-    public int $resultsTime = 11;
-    public int $gameTurns = 2;
+    public int $resultsTime = 6;
+    public int $gameTurns = 5;
 
     /**
      * Get the users in this room.
@@ -39,6 +41,11 @@ class Room extends Model
             ->withPivot('ready')
             ->withPivot('deleted_at')
             ->wherePivotNull('deleted_at');
+    }
+
+    public function turns(): HasMany
+    {
+        return $this->hasMany(Turn::class);
     }
 
     public function getDurationPerTurn(): int

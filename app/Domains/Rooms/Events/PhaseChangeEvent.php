@@ -2,19 +2,19 @@
 
 namespace App\Domains\Rooms\Events;
 
-use App\Domains\Rooms\Contracts\ARoomEvent;
+use App\Domains\Rooms\Contracts\ATurnEvent;
 use App\Domains\Rooms\Enums\RoomEventTypeEnum;
 use App\Domains\Rooms\Enums\RoomPhaseEnum;
-use App\Models\Room;
+use App\Models\Turn;
 
-class PhaseChangeEvent extends ARoomEvent
+class PhaseChangeEvent extends ATurnEvent
 {
     public function __construct(
-        Room $room,
+        Turn $turn,
         private RoomPhaseEnum $phase,
         private int $countdown,
     ) {
-        parent::__construct($room);
+        parent::__construct($turn);
     }
 
     public function getEventType(): RoomEventTypeEnum
@@ -25,8 +25,10 @@ class PhaseChangeEvent extends ARoomEvent
     public function getPayload(): array
     {
         return [
+            ...parent::getPayload(),
             'phase' => $this->phase->value,
             'countdown' => $this->countdown,
+            'tale_content' => $this->getRoom()->tale_content,
         ];
     }
 }

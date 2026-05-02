@@ -2,10 +2,11 @@
 
 namespace App\Domains\Rooms\Events;
 
-use App\Domains\Rooms\Contracts\ARoomEvent;
+use App\Domains\Rooms\Contracts\ATurnEvent;
 use App\Domains\Rooms\Enums\RoomEventTypeEnum;
+use App\Models\Sentence;
 
-class WordsListEvent extends ARoomEvent
+class WordsListEvent extends ATurnEvent
 {
     public function getEventType(): RoomEventTypeEnum
     {
@@ -14,7 +15,10 @@ class WordsListEvent extends ARoomEvent
 
     public function getPayload(): array
     {
-        return [];
+        $sentences = $this->turn->sentences()->get();
+        return [
+            ...parent::getPayload(),
+            'sentences' => $sentences
+        ];
     }
 }
-

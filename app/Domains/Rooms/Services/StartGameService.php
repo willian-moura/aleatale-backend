@@ -12,16 +12,21 @@ use App\Domains\Rooms\Enums\RoomPhaseEnum;
 use App\Domains\Rooms\Enums\RoomStatusEnum;
 use App\Domains\Rooms\Events\GameStartedEvent;
 use App\Domains\Rooms\Events\TurnChangeEvent;
+use App\Domains\Rooms\Events\TurnClockTickEvent;
 use App\Models\Room;
+use App\Models\Turn;
 use App\Support\EventChainBuilder\EventChainBuilder;
 
 
 class StartGameService
 {
+    private TurnService $turnService;
 
     public function __construct(
-        private Room $room,
-    ) {}
+        private Room $room
+    ) {
+        $this->turnService = new TurnService();
+    }
 
     public function execute(): void
     {
@@ -44,7 +49,8 @@ class StartGameService
             ->chainEvent(new ClockTickEvent($this->room), 5);
 
         for ($i = 0; $i < $this->room->gameTurns; $i++) {
-            $this->buildTurnEvents($builder, $i + 1);
+            $turn = $this->turnService->create($this->room, $i + 1);
+            $this->buildTurnEvents($builder, $turn);
         }
 
         $builder->chainEvent(new GameEndEvent($this->room), 1, 0);
@@ -52,19 +58,19 @@ class StartGameService
         return $builder;
     }
 
-    private function buildTurnEvents(EventChainBuilder $builder, int $turn)
+    private function buildTurnEvents(EventChainBuilder $builder, Turn $turn)
     {
         $builder
-            ->chainEvent(new TurnChangeEvent($this->room, $turn), 1, 0)
-            ->chainEvent(new PhaseChangeEvent($this->room, RoomPhaseEnum::SUBMISSION, $this->room->submissionTime), 1, 0)
-            ->chainEvent(new ClockTickEvent($this->room), $this->room->submissionTime)
-            ->chainEvent(new PhaseChangeEvent($this->room, RoomPhaseEnum::INTERVAL, $this->room->intervalTime), 1, 0)
-            ->chainEvent(new WordsListEvent($this->room), 1, 0)
-            ->chainEvent(new ClockTickEvent($this->room), $this->room->intervalTime)
-            ->chainEvent(new PhaseChangeEvent($this->room, RoomPhaseEnum::VOTE, $this->room->voteTime), 1, 0)
-            ->chainEvent(new ClockTickEvent($this->room), $this->room->voteTime)
-            ->chainEvent(new PhaseChangeEvent($this->room, RoomPhaseEnum::RESULTS, $this->room->resultsTime), 1, 0)
-            ->chainEvent(new VotingResultEvent($this->room), 1, 0)
-            ->chainEvent(new ClockTickEvent($this->room), $this->room->resultsTime);
+            ->chainEvent(new TurnChangeEvent($turn), 1, 0)
+            ->chainEvent(new PhaseChangeEvent($turn, RoomPhaseEnum::SUBMISSION, $this->room->submissionTime), 1, 0)
+            ->chainEvent(new TurnClockTickEvent($turn), $this->room->submissionTime)
+            ->chainEvent(new PhaseChangeEvent($turn, RoomPhaseEnum::INTERVAL, $this->room->intervalTime), 1, 0)
+            ->chainEvent(new TurnClockTickEvent($turn), $this->room->intervalTime)
+            ->chainEvent(new WordsListEvent($turn), 1, 0)
+            ->chainEvent(new PhaseChangeEvent($turn, RoomPhaseEnum::VOTE, $this->room->voteTime), 1, 0)
+            ->chainEvent(new TurnClockTickEvent($turn), $this->room->voteTime)
+            ->chainEvent(new VotingResultEvent($turn), 1, 0)
+            ->chainEvent(new PhaseChangeEvent($turn, RoomPhaseEnum::RESULTS, $this->room->resultsTime), 1, 0)
+            ->chainEvent(new TurnClockTickEvent($turn), $this->room->resultsTime);
     }
 }

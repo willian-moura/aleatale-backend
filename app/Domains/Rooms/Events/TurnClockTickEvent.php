@@ -5,19 +5,18 @@ namespace App\Domains\Rooms\Events;
 use App\Domains\Rooms\Contracts\ATurnEvent;
 use App\Domains\Rooms\Enums\RoomEventTypeEnum;
 
-class TurnChangeEvent extends ATurnEvent
+class TurnClockTickEvent extends ATurnEvent
 {
     public function getEventType(): RoomEventTypeEnum
     {
-        return RoomEventTypeEnum::TURN_CHANGE;
+        return RoomEventTypeEnum::CLOCK_TICK;
     }
 
     public function getPayload(): array
     {
         return [
             ...parent::getPayload(),
-            'turn' => $this->turn->number,
-            'tale_content' => $this->getRoom()->tale_content,
+            'tic' => 'tac',
         ];
     }
 }
